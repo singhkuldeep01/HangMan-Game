@@ -3,8 +3,9 @@ import LetterKeyboard from "../../Components/Letterkeyboard/LetterKeyboard";
 import Modal from "../../Components/Modal/Modal";
 import { useNavigate } from "react-router-dom";
 import HangMan from "../../Components/Hangman/Hangman";
+import Button from "../../Components/Buttons/Button";
 
-function  StartGame({value, guessedLetter , isGameOver , isGameWon , onLetterClickHandler, defination , incorrectGuessedLetter}) {
+function  StartGame({value, guessedLetter , isGameOver , isGameWon , onLetterClickHandler, defination , incorrectGuessedLetter , onCloseHandler}) {
     let navigate = useNavigate();
     return(
         <div className="h-full p-8 w-full flex flex-row bg-black overflow-hidden">
@@ -23,22 +24,30 @@ function  StartGame({value, guessedLetter , isGameOver , isGameWon , onLetterCli
                     </LetterKeyboard>
                 </div>
             </div>
-            <div className="h-full w-[40%] mt-[200px] flex justify-center">
+            <div className="h-full w-[40%] mt-[10px] flex justify-center flex-col items-center">
                 <HangMan
                     step={incorrectGuessedLetter}
                 ></HangMan>
+                <div>
+                <Button
+                    text="Change Word"
+                    buttonType="warning"
+                    onClickHandler={onCloseHandler}
+                    className = {"mt-10 h-12 w-12"}
+                ></Button>
+                </div>
             </div>
             <div>
                 <Modal
                         isOpen={isGameWon}
-                        onClose={() => {window.location.reload();}}
+                        onClose={onCloseHandler}
                         redirectToHome={() => {navigate('/')}}
                         title="Congratulations!"
                         message="You have won the game!"
                     />
                     <Modal
                         isOpen={isGameOver}
-                        onClose={() => {window.location.reload();}}
+                        onClose={onCloseHandler}
                         redirectToHome={() => {navigate('/')}}
                         title="Game Over"
                         message={`You have lost the game. Try again! 

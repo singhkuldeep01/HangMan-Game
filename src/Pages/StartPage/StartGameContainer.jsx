@@ -1,10 +1,12 @@
 import { useLocation } from "react-router-dom";
-import { useState , useEffect } from "react";
+import { useState , useEffect, useContext } from "react";
 import StartGame from "./StartGame";
+import { WordContext } from "../../Context/WordContext";
 function StartGameContainer(){
     const location = useLocation();
-    const value = location.state.word.inputValue;
-    const defination = location.state.defination.desValue;
+    const [wordList , setWorldList] = useContext(WordContext);
+    const [value, setValue] = useState(location.state.word.inputValue);
+    const [defination, setDefination] = useState(location.state.defination.desValue);
     const [guessedLetter, setGuessedLetter] = useState('');
     const [incorrectGuessedLetter, setIncorrectGuessedLetter] = useState(0);
     const [isGameWon, setIsGameWon] = useState(false);
@@ -16,11 +18,22 @@ function StartGameContainer(){
             if (guessedLetter.includes(letter)) {
                 return guessedLetter;
             }
-            if(!value.toUpperCase().includes(letter) && !guessedLetter.includes(letter)){
-                setIncorrectGuessedLetter(incorrectGuessedLetter => incorrectGuessedLetter + 1);
-            }
             return guessedLetter + letter;
         });
+        if(!value.toUpperCase().includes(letter) && !guessedLetter.includes(letter)){
+            console.log('Incorrect Guess');
+            setIncorrectGuessedLetter(incorrectGuessedLetter => incorrectGuessedLetter + 1);
+        }
+    }
+
+    function onCloseHandler(){
+        setIsGameOver(false);
+        setIsGameWon(false);
+        setGuessedLetter('');
+        setIncorrectGuessedLetter(0);
+        let data = wordList[Math.floor(Math.random()*wordList.length)];
+        setValue(data.wordValue);
+        setDefination(data.wordHint);
     }
 
     useEffect(() => {
@@ -60,6 +73,7 @@ function StartGameContainer(){
             onLetterClickHandler={onLetterClickHandler}
             defination={defination}
             incorrectGuessedLetter={incorrectGuessedLetter}
+            onCloseHandler={onCloseHandler}
         >
         </StartGame>
     );
